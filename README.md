@@ -1,6 +1,6 @@
-# CnS3Api, Python OVHCloud Object storage API
+# CnS3Api python library
 
-Lightweight python wrapper around OVHcloud Public Storage S3. Based on AWS boto3, it handles all the hard work including bucket transferts and OVH cold archive actions.
+Lightweight python wrapper around OVHcloud Public Storage S3. Based on AWS boto3, it handles all the hard work including bucket transfers and OVH cold archive actions.
 
 ```python
 from cn_s3_api.src.api import CNS3Api
@@ -56,7 +56,7 @@ python setup.py develop
 You've developed a new cool feature? Fixed an annoying bug? We'd be happy
 to hear from you!
 
-### Run the tests
+## Run the tests
 
 Simply run ``pytest``. It will automatically load its configuration from
 ``setup.cfg`` and output full coverage status. Since we all love quality, please
