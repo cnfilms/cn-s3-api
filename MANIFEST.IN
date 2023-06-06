@@ -1,0 +1,2 @@
+include             LICENSE CONTRIBUTORS MANIFEST.in *.md
+recursive-include   tests           *
