@@ -5,10 +5,9 @@ from pathlib import Path
 
 import boto3
 
-from cn_s3_api.src.cold import S3ColdBucket
-from cn_s3_api.src.exceptions import S3UploadError, S3BucketError, S3BucketMethodNotImplemented, \
-    S3BucketInvalidParameter
-from cn_s3_api.src.progress import ProgressPercentage
+from cn_s3_api.cold import S3ColdBucket
+from cn_s3_api.exceptions import S3BucketError, S3UploadError, S3BucketMethodNotImplemented
+from cn_s3_api.progress import ProgressPercentage
 
 
 class CNS3Api(object):
