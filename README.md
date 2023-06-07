@@ -47,8 +47,8 @@ this from a ``virtualenv``.
 ## Get the sources
 
 ```bash
-git clone https://github.com/ovh/python-ovh.git
-cd python-ovh
+git clone https://github.com/cnfilms/cn_s3_api.git
+cd cn_s3_api
 python setup.py develop
 
 ```
