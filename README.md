@@ -55,12 +55,10 @@ python setup.py develop
 
 ## Run the tests
 
-Simply run ``pytest``. It will automatically load its configuration from
-``setup.cfg`` and output full coverage status. Since we all love quality, please
-note that we do not accept contributions with test coverage under 100%.
+Simply run ``pytest``. It will automatically load its configuration from ``setup.cfg`` and output full coverage status. 
 
 ```bash
-pip install -e .[dev]
+pip install -e .
 pytest
 ```
 
