@@ -53,9 +53,6 @@ python setup.py develop
 
 ```
 
-You've developed a new cool feature? Fixed an annoying bug? We'd be happy
-to hear from you!
-
 ## Run the tests
 
 Simply run ``pytest``. It will automatically load its configuration from
@@ -66,6 +63,11 @@ note that we do not accept contributions with test coverage under 100%.
 pip install -e .[dev]
 pytest
 ```
+
+## Contributing
+
+If you find a bug :bug:, please open a [bug report](https://github.com/cnfilms/cn_s3_api/issues/new?assignees=&labels=bug&template=bug_report.md&title=).
+If you have an idea for an improvement or new feature :rocket:, please open a [feature request](https://github.com/cnfilms/cn_s3_api/issues/new?assignees=&labels=Feature+request&template=feature_request.md&title=).
 
 ## License
 
