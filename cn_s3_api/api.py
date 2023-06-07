@@ -79,7 +79,7 @@ class CNS3Api(object):
             self._logger.info(f'S3: bucket: {bucket.name}, downloading: {src} NOK')
             return False
 
-    def upload(self, source: str, bucket_name: str, prefix: str, extra_args=None) -> [str]:
+    def upload(self, bucket_name: str, source: str, prefix: str, extra_args=None) -> [str]:
 
         try:
             self._s3_client.create_bucket(Bucket=bucket_name)

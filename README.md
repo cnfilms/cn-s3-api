@@ -13,7 +13,7 @@ s3_api = CNS3Api(dict(
 ))
 
 s3_api.download('my-bucket', '/path_to_src_file', '/path_to_dst_file')
-s3_api.upload('/path_to_src_file', 'my-bucket', '/path_to_dst_bucket_file')
+s3_api.upload('my-bucket', '/path_to_src_file', '/path_to_dst_bucket_file')
 s3_api.list('my-bucket')
 s3_api.list('my-bucket', '/path_to_dst_bucket_dir')
 
