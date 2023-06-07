@@ -3,7 +3,7 @@
 Lightweight python wrapper around OVHcloud Public Storage S3. Based on AWS boto3, it handles all the hard work including bucket transfers and OVH cold archive actions.
 
 ```python
-from cn_s3_api.src.api import CNS3Api
+from cn_s3_api.api import CNS3Api
 
 s3_api = CNS3Api(dict(
     aws_access_key_id='xxxxxxxxxxxxxxxxxxxxxxxxx',
