@@ -35,7 +35,7 @@ pip install cn_s3_api
 Alternatively, you may get latest development version directly from Git.
 
 ```
-pip install -e git+https://github.com/cnfilms/cn_s3_api.git
+pip install -e git+https://github.com/cnfilms/cn-s3-api.git
 ```
 
 ## Hacking
@@ -47,8 +47,8 @@ this from a ``virtualenv``.
 ## Get the sources
 
 ```bash
-git clone https://github.com/cnfilms/cn_s3_api.git
-cd cn_s3_api
+git clone https://github.com/cnfilms/cn-s3-api.git
+cd cn-s3-api
 python setup.py develop
 
 ```
@@ -64,8 +64,8 @@ pytest
 
 ## Contributing
 
-If you find a bug :bug:, please open a [bug report](https://github.com/cnfilms/cn_s3_api/issues/new?assignees=&labels=bug&template=bug_report.md&title=).
-If you have an idea for an improvement or new feature :rocket:, please open a [feature request](https://github.com/cnfilms/cn_s3_api/issues/new?assignees=&labels=Feature+request&template=feature_request.md&title=).
+If you find a bug :bug:, please open a [bug report](https://github.com/cnfilms/cn-s3-api/issues/new?assignees=&labels=bug&template=bug_report.md&title=).
+If you have an idea for an improvement or new feature :rocket:, please open a [feature request](https://github.com/cnfilms/cn-s3-api/issues/new?assignees=&labels=Feature+request&template=feature_request.md&title=).
 
 ## License
 
