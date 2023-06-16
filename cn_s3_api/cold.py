@@ -1,3 +1,5 @@
+from cn_s3_api.utils import parse_list
+
 COLD_ARCHIVE_METHOD = 'OVH_ARCHIVE'
 COLD_RESTORE_METHOD = 'OVH_RESTORE'
 
@@ -5,6 +7,9 @@ COLD_RESTORE_METHOD = 'OVH_RESTORE'
 class S3ColdBucket(object):
     def __init__(self, s3_client):
         self._s3_client = s3_client
+
+    def list(self, bucket: str, _id) -> [dict]:
+        return parse_list(self._s3_client.list_objects(Bucket=bucket)['Contents'])
 
     def status(self, bucket, _id):
         return self._s3_client.get_bucket_intelligent_tiering_configuration(
