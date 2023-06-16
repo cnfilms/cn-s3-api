@@ -29,7 +29,6 @@ class CNS3Api(object):
 
     def download(self, bucket_name, src, dst, skip_identical=True, extra_args=None):
         bucket = self._s3_resource.Bucket(bucket_name)
-        dst = '{}{}'.format(dst, src)
 
         try:
             objects = [dict(name=f.key, size=f.size) for f in bucket.objects.filter(Prefix=src)]
@@ -69,10 +68,13 @@ class CNS3Api(object):
         self.notify({"success": all_downloads_ok, "level": "folder"})
 
     def _download(self, bucket, src, dst, extra_args=None):
+        if extra_args is None:
+            extra_args = dict()
+
         try:
             self._logger.info(f'S3: bucket: {bucket.name}, downloading: {src}...')
             bucket.download_file(
-                src, dst, **extra_args, Callback=self._progress(src) if self._progress else None)
+                src, dst, **extra_args, Callback=self._progress(dst) if self._progress else None)
             self._logger.info(f'S3: bucket: {bucket.name}, downloading: {src} OK')
             return True
         except Exception as e:
