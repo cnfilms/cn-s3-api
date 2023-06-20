@@ -16,7 +16,7 @@ class CNS3Api(object):
             s3_config,
             progress=False,
             callback=None,
-            logger_name=None
+            logger=None
     ):
         self._s3_client = boto3.client('s3', **s3_config)
         self._s3_resource = boto3.resource('s3', **s3_config)
@@ -25,7 +25,7 @@ class CNS3Api(object):
         self._exceptions = self._s3_client.exceptions
         self._callback = callback
         self._progress = ProgressPercentage if progress else None
-        self._logger = getLogger(logger_name)
+        self._logger = getLogger() if not logger else logger
 
     def download(self, bucket_name, src, dst, skip_identical=True, extra_args=None):
         bucket = self._s3_resource.Bucket(bucket_name)
@@ -120,7 +120,7 @@ class CNS3Api(object):
             self._logger.info(f'S3: bucket: {bucket_name}, uploading: {dst}...')
             self._s3_client.upload_file(
                 src, Bucket=bucket_name, Key=dst, ExtraArgs={**extra_args},
-                Callback=self._progress(src) if self._progress else None
+                Callback=self._progress(src, self._logger) if self._progress else None
             )
             self._logger.info(f'S3: bucket: {bucket_name}, uploading: {dst} OK')
             return True
