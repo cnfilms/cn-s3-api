@@ -37,10 +37,10 @@ class CNS3Api(object):
             raise S3BucketError(e)
 
         if len(objects) == 1:
-            if self._download(bucket, src, dst, extra_args):
-                self.notify(**{"success": True, "level": "file"})
+            if self._download(bucket, objects[0], dst, extra_args):
+                self.notify({"success": True, "level": "file"})
             else:
-                self.notify(**{"success": False, "level": "file"})
+                self.notify({"success": False, "level": "file"})
 
             return
 
@@ -59,7 +59,7 @@ class CNS3Api(object):
                 self.notify({"success": True, "level": "file", "object": obj['name'], "action": "download_object"})
                 continue
 
-            if self._download(bucket, obj['name'], target, extra_args):
+            if self._download(bucket, obj, target, extra_args):
                 self.notify({"success": True, "level": "file", "object": obj['name'], "action": "download_object"})
             else:
                 self.notify({"success": False, "level": "file", "object": obj['name'], "action": "download_object"})
@@ -67,14 +67,19 @@ class CNS3Api(object):
 
         self.notify({"success": all_downloads_ok, "level": "folder"})
 
-    def _download(self, bucket, src, dst, extra_args=None):
+    def _download(self, bucket, obj, dst, extra_args=None):
+        src = obj['name']
+        src_size = obj['size']
+
         if extra_args is None:
             extra_args = dict()
 
         try:
             self._logger.info(f'S3: bucket: {bucket.name}, downloading: {src}...')
             bucket.download_file(
-                src, dst, **extra_args, Callback=self._progress(dst) if self._progress else None)
+                src, dst, **extra_args,
+                Callback=self._progress(dst, obj_size=src_size, logger=self._logger) if self._progress else None
+            )
             self._logger.info(f'S3: bucket: {bucket.name}, downloading: {src} OK')
             return True
         except Exception as e:

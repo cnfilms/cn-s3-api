@@ -5,9 +5,9 @@ from logging import getLogger
 
 class ProgressPercentage(object):
 
-    def __init__(self, filename, logger=None):
+    def __init__(self, filename, obj_size=None, logger=None):
         self._filename = filename
-        self._size = float(os.path.getsize(filename))
+        self._size = obj_size if obj_size else float(os.path.getsize(filename))
         self._seen_so_far = 0
         self._lock = threading.Lock()
         self._logger = getLogger() if not logger else logger
