@@ -8,7 +8,7 @@ import boto3
 from cn_s3_api.cold import S3ColdBucket
 from cn_s3_api.exceptions import S3BucketError, S3UploadError, S3BucketMethodNotImplemented
 from cn_s3_api.progress import ProgressPercentage
-from cn_s3_api.utils import parse_object_name
+from cn_s3_api.utils import extract_obj_name
 
 
 class CNS3Api(object):
@@ -57,15 +57,15 @@ class CNS3Api(object):
 
             if skip_identical and self._check_identical(obj, target):
                 self._logger.info(f'S3: bucket: {bucket.name}, downloading: {target}: identical size, skipping..')
-                self.notify({"success": True, "level": "file", "object": parse_object_name(obj['name']),
+                self.notify({"success": True, "level": "file", "object": extract_obj_name(obj['name']),
                              "action": "download_object"})
                 continue
 
             if self._download(bucket, obj, target, extra_args):
-                self.notify({"success": True, "level": "file", "object": parse_object_name['name'],
+                self.notify({"success": True, "level": "file", "object": extract_obj_name('name'),
                              "action": "download_object"})
             else:
-                self.notify({"success": False, "level": "file", "object": parse_object_name['name'],
+                self.notify({"success": False, "level": "file", "object": extract_obj_name('name'),
                              "action": "download_object"})
                 all_downloads_ok = False
 
@@ -112,9 +112,9 @@ class CNS3Api(object):
                 dst = str(Path(prefix).joinpath(path))
 
                 if self._upload(bucket_name, src, dst, extra_args):
-                    self.notify({"success": "ok", "level": "file", "object": parse_object_name(src)})
+                    self.notify({"success": "ok", "level": "file", "object": extract_obj_name(src)})
                 else:
-                    self.notify({"success": False, "level": "file", "object": parse_object_name(src)})
+                    self.notify({"success": False, "level": "file", "object": extract_obj_name(src)})
                     self.notify({"success": False, "level": "folder"})
                     raise S3UploadError()
 

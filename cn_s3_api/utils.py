@@ -14,5 +14,5 @@ def parse_list(objects):
     return list_objects
 
 
-def parse_object_name(object_name):
+def extract_obj_name(object_name):
     return os.path.join(*(object_name.split(os.path.sep)[1:]))
