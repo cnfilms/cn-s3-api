@@ -62,10 +62,10 @@ class CNS3Api(object):
                 continue
 
             if self._download(bucket, obj, target, extra_args):
-                self.notify({"success": True, "level": "file", "object": extract_obj_name('name'),
+                self.notify({"success": True, "level": "file", "object": extract_obj_name(obj['name']),
                              "action": "download_object"})
             else:
-                self.notify({"success": False, "level": "file", "object": extract_obj_name('name'),
+                self.notify({"success": False, "level": "file", "object": extract_obj_name(obj['name']),
                              "action": "download_object"})
                 all_downloads_ok = False
 
