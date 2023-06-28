@@ -4,7 +4,7 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-with open(path.join(here, 'src/info.py')) as f:
+with open(path.join(here, 'cn_s3_api/info.py')) as f:
     exec(f.read())
 
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:

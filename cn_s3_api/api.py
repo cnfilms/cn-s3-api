@@ -125,7 +125,7 @@ class CNS3Api(object):
             self._logger.info(f'S3: bucket: {bucket_name}, uploading: {dst}...')
             self._s3_client.upload_file(
                 src, Bucket=bucket_name, Key=dst, ExtraArgs={**extra_args},
-                Callback=self._progress(src, self._logger) if self._progress else None
+                Callback=self._progress(filename=src, logger=self._logger) if self._progress else None
             )
             self._logger.info(f'S3: bucket: {bucket_name}, uploading: {dst} OK')
             return True
