@@ -37,6 +37,11 @@ class CNS3Api(object):
             self.notify({"success": False, "level": "folder"})
             raise S3BucketError(e)
 
+        if not objects:
+            self._logger.info(f'S3: bucket: {bucket_name}, downloading: {src} NOK, no files to download')
+            self.notify({"success": False, "level": "folder"})
+            return
+
         if len(objects) == 1:
             if self._download(bucket, objects[0], dst, extra_args):
                 self.notify({"success": True, "level": "file"})
@@ -99,6 +104,11 @@ class CNS3Api(object):
             self._logger.info(f'S3: bucket already exist: {bucket_name}')
 
         paths = self.list_source_objects(source_folder=source)
+
+        if not paths:
+            self._logger.info(f'S3: bucket: {bucket_name}, uploading: {prefix} NOK, no files to upload')
+            self.notify({"success": False, "level": "folder"})
+            return
 
         objects = self.list(bucket_name, prefix)
         object_keys = [obj['Key'] for obj in objects]
