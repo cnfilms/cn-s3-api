@@ -122,10 +122,10 @@ class CNS3Api(object):
                 dst = str(Path(prefix).joinpath(path))
 
                 if self._upload(bucket_name, src, dst, extra_args):
-                    self.notify({"success": True, "level": "file", "object": extract_obj_name(src),
+                    self.notify({"success": True, "level": "file", "object": extract_obj_name(dst),
                                  "status": 'uploaded'})
                 else:
-                    self.notify({"success": False, "level": "file", "object": extract_obj_name(src)})
+                    self.notify({"success": False, "level": "file", "object": extract_obj_name(dst)})
                     self.notify({"success": False, "level": "folder"})
                     raise S3UploadError()
 
