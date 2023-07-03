@@ -164,9 +164,9 @@ class CNS3Api(object):
         bucket.objects.all().delete()
         return bucket.delete()
 
-    def cold_action(self, action: str, container, _id):
+    def cold_action(self, action: str, container, _id, prefix):
         try:
-            return getattr(self._s3_cold, action)(container, _id)
+            return getattr(self._s3_cold, action)(container, _id, prefix)
         except self._exceptions.NoSuchBucket:
             raise S3BucketError('Bucket does not exists or not configured')
         except AttributeError as e:
