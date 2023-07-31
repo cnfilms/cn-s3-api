@@ -160,6 +160,10 @@ class CNS3Api(object):
 
         return contents
 
+    def remove(self, bucket_name, prefix):
+        bucket = self._s3_resource.Bucket(bucket_name)
+        return bucket.objects.filter(Prefix=prefix).delete()
+
     def remove_bucket(self, bucket_name, _id):
         bucket = self._s3_resource.Bucket(bucket_name)
         bucket.objects.all().delete()
