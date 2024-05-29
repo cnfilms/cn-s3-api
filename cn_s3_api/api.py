@@ -9,6 +9,8 @@ from cn_s3_api.cold import S3ColdBucket
 from cn_s3_api.exceptions import S3BucketError, S3UploadError, S3BucketMethodNotImplemented
 from cn_s3_api.progress import ProgressPercentage
 from cn_s3_api.utils import extract_obj_name
+from botocore.exceptions import ClientError
+from typing import Optional
 
 
 class CNS3Api(object):
@@ -204,3 +206,32 @@ class CNS3Api(object):
     def notify(self, data):
         if self._callback:
             self._callback(**data)
+
+    def create_presigned_url(self, bucket_name: str,
+                             object_name: str,
+                             expiration=3600) -> Optional[str]:
+        """Generate a presigned URL to share an s3 object
+
+        Arguments:
+            bucket_name {str} -- Required. s3 bucket of object to share
+            object_name {str} -- Required. s3 object to share
+
+        Keyword Arguments:
+            expiration {int} -- Expiration in seconds (default: {3600})
+
+        Returns:
+            Optional[str] -- Presigned url of s3 object. If error, returns None.
+        """
+
+        try:
+            # note that we are passing get_object as the operation to perform
+            response = self._s3_client.generate_presigned_url('get_object',
+                                                              Params={
+                                                                  'Bucket': bucket_name,
+                                                                  'Key': object_name
+                                                              },
+                                                              ExpiresIn=expiration)
+        except ClientError as e:
+            self._logger.error(e)
+            return None
+        return response
