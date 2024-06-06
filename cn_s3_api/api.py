@@ -253,3 +253,23 @@ class CNS3Api(object):
             self._logger.error(e)
             return None
         return response
+
+    def copy_files(self, source_bucket, destination_bucket, object_name):
+        """
+        copy object from container A to B
+        """
+        try:
+            self._s3_client.copy_object(
+                Bucket=destination_bucket,
+                CopySource={'Bucket': source_bucket, 'Key': object_name['from_object']},
+                Key=object_name['to_object']
+            )
+            self._logger.info(f'S3: Copied {object_name["to_object"]} from {source_bucket} to {destination_bucket}')
+            self.notify({"success": True, "action": "copy_object", "source_bucket": source_bucket,
+                         "destination_bucket": destination_bucket, "destination_key": {object_name["to_object"]}})
+        except ClientError as e:
+            self._logger.error(f'Failed to copy  {object_name["from_object"]} from {source_bucket} '
+                               f'to {destination_bucket}: {e}')
+            self.notify({"success": False, "action": "copy_object", "source_bucket": source_bucket,
+                         "destination_bucket": destination_bucket})
+            raise
