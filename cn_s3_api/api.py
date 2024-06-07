@@ -273,3 +273,13 @@ class CNS3Api(object):
             self.notify({"success": False, "action": "copy_object", "source_bucket": source_bucket,
                          "destination_bucket": destination_bucket})
             raise
+
+    def upload_file(self,  bucket_name, src, dst, extra_args=None):
+        try:
+            self._upload(bucket_name, src, dst, extra_args)
+            self.notify({"success": True, "level": "file", "object": extract_obj_name(dst),
+                         "status": 'uploaded'})
+        except ClientError:
+            self.notify({"success": False, "level": "file", "object": extract_obj_name(dst)})
+            self.notify({"success": False, "level": "folder"})
+            raise
