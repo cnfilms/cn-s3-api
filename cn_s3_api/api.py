@@ -9,6 +9,8 @@ from cn_s3_api.cold import S3ColdBucket
 from cn_s3_api.exceptions import S3BucketError, S3UploadError, S3BucketMethodNotImplemented
 from cn_s3_api.progress import ProgressPercentage
 from cn_s3_api.utils import extract_obj_name
+from botocore.exceptions import ClientError
+from typing import Optional
 
 
 class CNS3Api(object):
@@ -164,6 +166,24 @@ class CNS3Api(object):
         bucket = self._s3_resource.Bucket(bucket_name)
         return bucket.objects.filter(Prefix=prefix).delete()
 
+    def remove_objects(self, bucket_name, prefixes):
+
+        bucket = self._s3_resource.Bucket(bucket_name)
+        delete_responses = {}
+        objects_list = []
+        for prefix in prefixes:
+            objects_to_delete = bucket.objects.filter(Prefix=prefix)
+            objects_list.extend([{'Key': obj.key} for obj in objects_to_delete])
+
+        if objects_list:
+            try:
+                response = bucket.delete_objects(Delete={'Objects': objects_list})
+                delete_responses = response
+            except Exception as e:
+                self._logger.error(f"Exception occurred while deleting objects: {e}")
+
+        return delete_responses
+
     def remove_bucket(self, bucket_name, _id):
         bucket = self._s3_resource.Bucket(bucket_name)
         bucket.objects.all().delete()
@@ -204,3 +224,62 @@ class CNS3Api(object):
     def notify(self, data):
         if self._callback:
             self._callback(**data)
+
+    def create_presigned_url(self, bucket_name: str,
+                             object_name: str,
+                             expiration=3600) -> Optional[str]:
+        """Generate a presigned URL to share an s3 object
+
+        Arguments:
+            bucket_name {str} -- Required. s3 bucket of object to share
+            object_name {str} -- Required. s3 object to share
+
+        Keyword Arguments:
+            expiration {int} -- Expiration in seconds (default: {3600})
+
+        Returns:
+            Optional[str] -- Presigned url of s3 object. If error, returns None.
+        """
+
+        try:
+            # note that we are passing get_object as the operation to perform
+            response = self._s3_client.generate_presigned_url('get_object',
+                                                              Params={
+                                                                  'Bucket': bucket_name,
+                                                                  'Key': object_name
+                                                              },
+                                                              ExpiresIn=expiration)
+        except ClientError as e:
+            self._logger.error(e)
+            return None
+        return response
+
+    def copy_files(self, source_bucket, destination_bucket, object_name):
+        """
+        copy object from container A to B
+        """
+        try:
+            self._s3_client.copy_object(
+                Bucket=destination_bucket,
+                CopySource={'Bucket': source_bucket, 'Key': object_name['from_object']},
+                Key=object_name['to_object']
+            )
+            self._logger.info(f'S3: Copied {object_name["to_object"]} from {source_bucket} to {destination_bucket}')
+            self.notify({"success": True, "action": "copy_object", "source_bucket": source_bucket,
+                         "destination_bucket": destination_bucket, "destination_key": {object_name["to_object"]}})
+        except ClientError as e:
+            self._logger.error(f'Failed to copy  {object_name["from_object"]} from {source_bucket} '
+                               f'to {destination_bucket}: {e}')
+            self.notify({"success": False, "action": "copy_object", "source_bucket": source_bucket,
+                         "destination_bucket": destination_bucket})
+            raise
+
+    def upload_file(self,  bucket_name, src, dst, extra_args=None):
+        try:
+            self._upload(bucket_name, src, dst, extra_args)
+            self.notify({"success": True, "level": "file", "object": extract_obj_name(dst),
+                         "status": 'uploaded'})
+        except ClientError:
+            self.notify({"success": False, "level": "file", "object": extract_obj_name(dst)})
+            self.notify({"success": False, "level": "folder"})
+            raise
