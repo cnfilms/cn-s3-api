@@ -169,20 +169,18 @@ class CNS3Api(object):
     def remove_objects(self, bucket_name, prefixes):
 
         bucket = self._s3_resource.Bucket(bucket_name)
-        delete_responses = {}
         objects_list = []
         for prefix in prefixes:
             objects_to_delete = bucket.objects.filter(Prefix=prefix)
             objects_list.extend([{'Key': obj.key} for obj in objects_to_delete])
 
-        if objects_list:
-            try:
-                response = bucket.delete_objects(Delete={'Objects': objects_list})
-                delete_responses = response
-            except Exception as e:
-                self._logger.error(f"Exception occurred while deleting objects: {e}")
-
-        return delete_responses
+        if not objects_list:
+            return {'not_found': True}
+        try:
+            return bucket.delete_objects(Delete={'Objects': objects_list})
+        except Exception as e:
+            self._logger.error(f"Exception occurred while deleting objects: {e}")
+            raise e
 
     def remove_bucket(self, bucket_name, _id):
         bucket = self._s3_resource.Bucket(bucket_name)
